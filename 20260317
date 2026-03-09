@@ -1,0 +1,32 @@
+## ATAQUES DE INFRAESTRUTURA E CÓDIGO (GitHub)
+
+**(Habilidade 1.1: Identificar ameaças técnicas)**
+
+### 1. Negação de Serviço (DoS e DDoS)
+
+* **O que é:** Sobrecarregar um servidor até ele cair.
+* **No mundo Dev:** Imagine que você subiu um site no GitHub Pages ou Vercel. Um ataque DDoS pode esgotar sua cota gratuita em minutos ou derrubar seu portfólio.
+* **O perigo do "Botnet":** Hackers usam milhares de PCs infectados (incluindo o seu, se você caiu na Engenharia Social da Aula 01) para atacar alvos grandes como o próprio GitHub.
+
+### 2. Malware via Dependências (Ataque de Cadeia de Suprimentos)
+
+* **Como funciona:** O hacker cria um pacote malicioso com nome parecido com um famoso (Ex: `react-domm` em vez de `react-dom`).
+* **Ameaça:** Você digita errado no terminal, instala o pacote e, sem saber, injeta um **Trojan** ou **Ransomware** dentro do servidor da sua empresa ou no seu PC.
+* **Resultado:** O malware rouba seu código-fonte e criptografa seus arquivos para pedir resgate.
+
+### 3. Golpes em Repositórios (Typosquatting)
+
+* **Atenção ao detalhe:** Hackers clonam repositórios famosos (como o VS Code ou React) e colocam uma "melhoria" que, na verdade, é um vírus.
+* **Identificação:** Sempre checar o número de estrelas e se o perfil do autor é verificado antes de baixar ou contribuir.
+
+---
+
+### 💻 ATIVIDADE PRÁTICA (Instrumento de Avaliação)
+
+Peça para os alunos abrirem o terminal ou o GitHub e executarem o **"Check de Integridade"**:
+
+1. **Dependências:** No GitHub, clique na aba **"Security"** de qualquer repositório deles e depois em **"Dependabot alerts"**.
+2. **Identificar Vulnerabilidades:** Se houver alertas em vermelho, peça para identificarem qual biblioteca está "doente" e o que o alerta diz (Habilidade 1.1).
+3. **Análise de Risco:** Discuta: "Se o GitHub avisou que essa biblioteca tem um erro, o que acontece com o meu site se eu ignorar?"
+
+**Quer que eu prepare uma questão rápida de múltipla escolha para eles responderem agora e você já usar como nota de "Avaliação Prática"?**
