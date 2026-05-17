@@ -11,13 +11,13 @@
 
 ## 1. Antes da aula: registrar o OAuth Client no Google
 
-1. Acesse https://console.cloud.google.com/ logado com `crebollo@gmail.com`.
+1. Acesse https://console.cloud.google.com/ logado com `gustavoglcosta@gmail.com`.
 2. Crie um novo projeto: **"Curso SSI 2026"**.
 3. **APIs & Services → OAuth consent screen**
    - User type: **External**
    - App name: `Curso SSI`
-   - Support email: `crebollo@gmail.com`
-   - Developer contact: `crebollo@gmail.com`
+   - Support email: `gustavoglcosta@gmail.com`
+   - Developer contact: `gustavoglcosta@gmail.com`
    - Scopes: adicionar `openid`, `.../auth/userinfo.email`, `.../auth/userinfo.profile`
    - **Test users:** adicionar o e-mail Google de cada aluno. (Se não publicar o app, só os e-mails listados conseguem entrar — isso evita que o app caia em moderação do Google e é suficiente para 20 alunos.)
 4. **APIs & Services → Credentials → Create Credentials → OAuth Client ID**
@@ -45,9 +45,20 @@
 ## 2. Infra dos alunos (lembrete)
 
 - 10 duplas: `time01` até `time10`.
-- Cada uma roda Flask em `https://curso.chr.eti.br/timeNN`.
-- Cada subdomínio precisa estar configurado no reverse proxy (nginx ou similar) para fazer proxy para a porta Flask de cada aluno (ex.: porta 5001 para time01, 5002 para time02, ...). Vale alinhar isso antes da aula ou pedir para eles usarem ports diferentes.
-- Como o app é servido em `/timeNN/`, o `REDIRECT_URI` deve incluir esse prefixo. O Flask, internamente, vê apenas `/callback` (porque o proxy remove o prefixo). Se o proxy NÃO remover o prefixo, as rotas no Flask precisam ser `@app.route("/timeNN/callback")` etc.
+- Cada uma roda Flask numa porta dedicada: **time01 → 5001, time02 → 5002, ..., time10 → 5010**.
+- O reverse proxy (nginx) faz `https://curso.chr.eti.br/timeNN/...` → `http://127.0.0.1:50NN/...` **mantendo o prefixo** (sem strip). Isso simplifica o código do aluno: as rotas Flask carregam o prefixo explicitamente (`@app.route(f"/{TEAM}/login")`), e qualquer `href`/`redirect` também usa o prefixo. Dessa forma o app só funciona se o aluno setar `TEAM` corretamente — não tem como dar "redireciona pro root" por acidente.
+- Exemplo de bloco no nginx (sem `proxy_pass` com `/` no final, justamente para não estripar):
+
+```nginx
+location /time01/ {
+    proxy_pass http://127.0.0.1:5001;
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-Proto https;
+    proxy_set_header X-Real-IP $remote_addr;
+}
+```
+
+> Repita o bloco para `time02..time10` com a porta correspondente.
 
 ---
 
@@ -86,6 +97,8 @@
 | Sintoma | Causa provável |
 |---------|----------------|
 | `Error 400: redirect_uri_mismatch` | A `REDIRECT_URI` no código não bate **exatamente** com a cadastrada no Google Cloud Console. Cuidado com `http` vs `https`, barra final, e prefixo `/timeNN`. |
+| Após clicar "Entrar com Google", navegador vai pra `curso.chr.eti.br/login` (sem o `/timeNN`) e dá 404 | Aluno deixou um `href="/login"` ou `redirect("/")` sem o prefixo. Conferir se tudo no código usa `f"/{TEAM}/..."`. |
+| 404 ao abrir `https://curso.chr.eti.br/timeNN/` | Variável `TEAM` no código não bate com o subdomínio, ou a porta no `app.run(...)` não bate com a do nginx. |
 | `Error 403: access_denied` | E-mail do aluno não está na lista de Test Users do OAuth consent screen. |
 | `invalid_client` na troca do code | `client_secret` foi colado errado (espaço no final é comum). |
 | Página fica em loop entre `/` e `/login` | `app.secret_key` mudou entre requests (acontece se Flask reinicia em modo debug). Mantenha a chave fixa. |
