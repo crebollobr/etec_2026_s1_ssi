@@ -11,13 +11,13 @@
 
 ## 1. Antes da aula: registrar o OAuth Client no Google
 
-1. Acesse https://console.cloud.google.com/ logado com `gustavoglcosta@gmail.com`.
+1. Acesse https://console.cloud.google.com/ logado com `crebollo@gmail.com`.
 2. Crie um novo projeto: **"Curso SSI 2026"**.
 3. **APIs & Services → OAuth consent screen**
    - User type: **External**
    - App name: `Curso SSI`
-   - Support email: `gustavoglcosta@gmail.com`
-   - Developer contact: `gustavoglcosta@gmail.com`
+   - Support email: `crebollo@gmail.com`
+   - Developer contact: `crebollo@gmail.com`
    - Scopes: adicionar `openid`, `.../auth/userinfo.email`, `.../auth/userinfo.profile`
    - **Test users:** adicionar o e-mail Google de cada aluno. (Se não publicar o app, só os e-mails listados conseguem entrar — isso evita que o app caia em moderação do Google e é suficiente para 20 alunos.)
 4. **APIs & Services → Credentials → Create Credentials → OAuth Client ID**
